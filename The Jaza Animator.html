@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>The Jaza Animator</title>
+</head>
+
+<body>
+<h1>The Jaza Animator</h1>
+
+Jaza is an `Animator' for the Z formal specification language.
+<p>
+It is intended to help you validate specifications via:
+<ul>
+  <li>evaluating Z expressions;
+  <li>testing Z schemas against example data values;
+  <li>executing Z specifications (but not all specifications
+      are executable). 
+</ul>
+
+Jaza is free, open-source software, distributed under the GPL (GNU Public
+License).  It was developed here at the University of Waikato, mostly
+by me (Mark Utting).  Development started mid-1999 and the current
+version animates almost all of Spivey Z (2nd edition), except generics,
+bags and axiomatic definitions.
+Here is the <a href="doc/userman.pdf">Jaza User Manual and
+Tutorial</a> in PDF format (included in the distributions also).
+
+<p>
+The following releases of Jaza (version 1.1) are available:
+<ul>
+  <li><a href="dist/jaza_1_1_win.zip">Binary Release 1.1 for Windows XP</a>.
+  <li><a href="dist/jaza_1_1_linux.tgz">Binary Release 1.1 for Linux</a>.
+      This was compiled under Gentoo Linux, using GHC 6.2 with static
+      libraries, so should also work on many other versions of Linux.
+  <li><a href="dist/jaza_1_1_source.tgz">Source Release 1.1</a>.  This
+      requires you to install Haskell first, either <a href="http://www.haskell.org/hugs">Hugs98</a>
+      or GHC.
+</ul>
+<p>
+A summary of the main recent changes:
+<ul>
+  <li>Jun 2005 (release 1.1): Improved evaluation of some function calls -- arguments are
+      now evaluated into canonical form before the function application.
+      This version has one known bug, when multiple exists at the same
+      level contain the same bound variable name.  See the
+      <a href="README.txt">README</a> file for details.
+  <li>Mar 2005 (release 1.0):
+      The 'why' command now gives better
+      explanation about where and why evaluation was too difficult.
+      Numerous optimisation improvements so that more expressions
+      and schemas can be evaluated.  In particular, nested exists within
+      schemas and set comprehensions are now unfolded then optimised.
+  <li>28 Jun 2002: Alpha release of Z to BZP translators for Linux and
+      Windows.
+  <li>15 Apr 2002 0.90: Binary version now has command line editing.
+      (Source version provides command line editing if Hugs does,
+      but always handles backspaces).  Extensive internal rewrite
+      to use the visitor design pattern.  Schemas that contain false
+      are now optimized more agressively.
+  <li>7 Dec 2000 0.86: several errors fixed, so that nested
+      \forall, \mu terms etc. are now more agressively optimized.
+  <li>1 Nov 2000 0.84: vastly improved error messages.
+      Explicit bindings (\lblot..\rblot) are now supported.
+</ul>
+
+<p>
+The distributions include a user manual.  Here is a
+<a href="doc/jaza.ps.gz">paper</a>
+(also in <a href="doc/jaza.pdf">PDF</a>)
+about the philosophy and implementation of Jaza, including
+a small comparison with several other Z animators.
+This paper was presented at the FM-TOOLS 2000 conference in Germany,
+July 2000 (in TR 2000-07, Information Faculty, University of Ulm).
+
+<hr>
+<address>marku@cs.waikato.ac.nz</address>
+<!-- hhmts start -->
+Last modified: Fri Sep 16 11:56:38 NZST 2005
+<!-- hhmts end -->
+</body> </html>
