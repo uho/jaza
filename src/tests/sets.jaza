@@ -1,0 +1,333 @@
+% This is an input file for Jaza, to test basic set operations.
+%
+% Each command must be on a single line.
+% Each checktrue should evaluate to True
+%   (any other result means the test has exposed an error in Jaza).
+
+echo Testing sets...
+
+
+\begin{zed}
+s1  == \{1\} \\
+s13 == \{1,2,3\} \\
+s35 == \{3,4,5\} \\
+s15 == 1 \upto 5 \\
+% These set comprehensions range over finite sets
+fcomp13 == \{x: 1 \upto 10 | x < 4\} \\
+fcomp149 == \{x: 1 \upto 10 | x*x < 10 @ x*x\}
+\end{zed}
+
+
+echo     Testing membership of explicit sets
+checktrue 1  \in s13
+checktrue 2  \in s13
+checktrue 3  \in s13
+checktrue 4  \notin s13
+checktrue 4  \in \num
+checktrue 4  \in \nat
+checktrue -1 \notin \nat
+checktrue 4  \in \nat_1
+checktrue 0  \notin \nat_1
+
+
+echo     Testing set union
+% on empty sets
+checktrue \{\}      \cup \emptyset   = \emptyset
+checktrue \emptyset \cup s13         = s13
+checktrue s13       \cup \emptyset   = s13
+checktrue \emptyset \cup fcomp13     = s13
+checktrue fcomp13   \cup \emptyset   = 1 \upto 3
+% singleton sets
+checktrue s1        \cup s1          = s1
+checktrue s1        \cup (0 \upto 2) = 0 \upto 2
+checktrue (0 \upto 2) \cup s1        = \{0,1,2\}
+% on larger sets
+checktrue s13       \cup \{5,4,5,0\} = 0 \upto 5
+checktrue s13       \cup s35         = 1 \upto 5
+checktrue s13       \cup (0 \upto 6) = 0 \upto 6
+checktrue (0 \upto 6) \cup s13       = 0 \upto 6
+% on set comprehensions
+checktrue s13       \cup fcomp13     = s13
+checktrue fcomp13   \cup s13         = s13
+checktrue fcomp13   \cup fcomp13     = fcomp13
+checktrue fcomp13   \cup fcomp149    = \{9,1,2,3,4\}
+
+
+echo     Testing generalized set union (\bigcup)
+% These tests by Dong Qiao, 0657.424 student at Waikato in 2000.
+\begin{zed}
+set1 == \{\} \\                 % emptyset
+set2 == \emptyset \\            % emptyset
+set3 == \{1\} \\                % single element
+set4 == \{2,3,4\} \\            % 
+set5 == \{x: 5 \upto 10 | x \mod 2 = 0 \} \\
+set6 == 0 \upto 3  \\
+set7 == \{x: 1 \upto 10 | x < 6 \} \\
+set8 == 5 \upto 1 \\
+set9 == \{0 \upto 3\} \\
+\end{zed}
+
+% check empty set
+checktrue       \bigcup \{set1\}        = set1
+checktrue       \bigcup \{set1,set2\}   = set1 \cup set2
+checktrue       \bigcup \{set1,set3\}   = set1 \cup set3
+checktrue       \bigcup \{set1,set4\}   = set1 \cup set4
+checktrue       \bigcup \{set1,set3,set4\} = set1 \cup set3 \cup set4
+checktrue       \bigcup \{set1,set5,set7\} = set1 \cup set5 \cup set7
+checktrue       \bigcup \{\{set1\}\}    = \{set1\}
+checktrue       \bigcup \{set1,\{set3\}\} = set1 \cup \{set3\}
+checktrue       \bigcup \{\{set1\},set3\} = \{set1\} \cup set3
+checktrue       \bigcup \{set1,\{set4\}\} = set1 \cup \{set4\}
+checktrue       \bigcup \{\{set1\},set4\} = \{set1\} \cup set4
+
+% singleton sets
+checktrue       \bigcup \{set3,\{1\},\{2\}\}  = set3 \cup \{1\} \cup \{2\}
+checktrue       \bigcup \{set3,set4\}         = set3 \cup set4
+checktrue       \bigcup \{set1,set3,\{1\}\}   = set1 \cup set3 \cup \{1\}
+checktrue       \bigcup \{set3\}              = set3
+checktrue       \bigcup set9                  = \{0,1,2,3\}
+checktrue       \bigcup \{\{set3\},set4\} = \{set3\} \cup set4
+checktrue       \bigcup \{set3,\{set4\}\} = set3 \cup \{set4\}
+
+% larger sets
+checktrue       \bigcup \{set4,set5\}   = set4 \cup set5
+checktrue       \bigcup \{\{set4\},set5\} = \{set4\} \cup set5
+checktrue       \bigcup \{set4,\{set5\}\} = set4 \cup \{set5\}
+checktrue       \bigcup \{set5,set6\}   = set5 \cup set6
+checktrue       \bigcup \{0 \upto 3, \{4,5\}\}  = 0 \upto 5
+checktrue       \bigcup \{set5,set7\}   = set5 \cup set7
+checktrue       \bigcup \{set6,set8\}   = set6 \cup set8
+checktrue       \bigcup \{set4,set5,set7\}     =  set4 \cup set5 \cup set7
+
+% TODO: infinite sets
+% checktrue     \bigcup \{\nat_1,\{0\}\}     = \nat
+% checktrue     \bigcup \{\nat_1,\{1,3,5\}\} = \nat_1
+% checktrue     \bigcup \{\nat,  \{x:\num | x<0\}\} = \num
+% checktrue     \bigcup \{\nat_1,\{x:\num | x<0\}\} = \num \setminus \{0\}
+
+
+echo     Testing set intersection
+% on empty sets
+checktrue \{\}      \cap \emptyset   = \emptyset
+checktrue \emptyset \cap s13         = \emptyset
+checktrue s13       \cap \emptyset   = \emptyset
+checktrue \emptyset \cap fcomp13     = \emptyset
+checktrue fcomp13   \cap \emptyset   = \emptyset
+% singleton sets
+checktrue s1        \cap s1          = s1
+checktrue s1        \cap (0 \upto 2) = s1
+checktrue (0 \upto 2) \cap s1        = s1
+% on larger sets
+checktrue s13       \cap \{5,4,5,0\} = \emptyset
+checktrue s13       \cap s35         = \{3\}
+checktrue s13       \cap (0 \upto 6) = s13
+checktrue (0 \upto 6) \cap s13       = s13
+% on set comprehensions
+checktrue s13       \cap fcomp13     = s13
+checktrue fcomp13   \cap s13         = s13
+checktrue fcomp13   \cap fcomp13     = fcomp13
+checktrue fcomp13   \cap fcomp149    = \{1\}
+% on finite integer ranges
+checktrue (1 \upto 3) \cap (4 \upto 9) = \{\}
+checktrue (1 \upto 3) \cap (3 \upto 9) = \{3\}
+checktrue (1 \upto 3) \cap (2 \upto 9) = \{2,3\}
+checktrue (1 \upto 3) \cap (0 \upto 9) = \{1,2,3\}
+checktrue (1 \upto 3) \cap (0 \upto 3) = \{1,2,3\}
+checktrue (1 \upto 3) \cap (0 \upto 1) = \{1\}
+checktrue (1 \upto 3) \cap (-3 \upto 0) = \{\}
+checktrue (1 \upto 3) \cap (0 \upto -1) = \{\}
+% on infinite integer ranges
+checktrue \nat \cap (4 \upto 6) = \{4,5,6\}
+checktrue \nat \cap (-3 \upto 0) = \{0\}
+checktrue \nat \cap (-3 \upto -1) = \{\}
+checktrue \num \cap \nat = \nat
+checktrue \nat \cap \nat_1 = \nat_1
+% TODO: add cases like:
+%         (? < 3) \cap \nat = \{0,1,2\}
+
+echo     Testing moving predicates into the type of set comprehension
+checktrue \{ x:\num | x \in \{1,3,5\} \} = \{1,3,5\}
+checktrue \{ x:\num | x<3 \land x>0 \} = \{1,2\}
+checktrue \{ x:\num | 3>x \land x>0 \land x>2 \} = \{\}
+checktrue \{ x,y:\nat | y<x<3 \} = (\{2\} \cross (0 \upto 1)) \cup \{(1,0)\}
+checktrue \{ s:\power \nat | s \subseteq 1 \upto 2 \} = \power(1 \upto 2)
+checktrue (\{ s:\power \nat | s \subset 1 \upto 2 \}
+          = \power(1 \upto 2) \setminus \{ \{1,2\} \})
+%
+%  TODO: add this one when type information is known!
+%  checktrue (\{ s,t:\power \nat | s \cup t = s1 \} 
+%         = \{ (\emptyset,s1), (s1,\emptyset), (s1,s1) \})
+
+checktrue \{ x,y:\nat | x+y = 2 \land x \leq 4 \} = \{(0,2),(1,1),(2,0)\}
+checktrue \{ x,y:\nat | x+y = 2 \land y \leq 4 \} = \{(0,2),(1,1),(2,0)\}
+checktrue \{ x,y:\nat | x-y = 1 \land 2 \geq y \} = \{(3,2),(2,1),(1,0)\}
+checktrue \{ x,y:\nat | x-y = 1 \land 2 \geq x \} = \{(1,0),(2,1)\}
+checktrue \{ x,y:\nat | (x,3) = (2,y) \} = \{(2,3)\}
+checktrue \{ x,y:\nat | (x,y) = (\mu x,y:\{3\}) \} = \{(3,3)\}
+
+% flattening nested exists
+% (this can be evaluated only when the exists is flattened)
+checktrue \# \{x:\nat | \exists y:0 \upto 12 @ y*x=12 \land x<y\} = 3
+
+% TODO: Formatter gives an error on this!
+showp \{ x,y:\nat | (x,y) = (\mu x,y:\{3\}) \} = \{(3,3)\}
+
+echo     Testing set minus
+% on empty sets
+checktrue \{\}      \setminus \emptyset   = \emptyset
+checktrue \emptyset \setminus s13         = \emptyset
+checktrue s13       \setminus \emptyset   = s13
+checktrue \emptyset \setminus fcomp13     = \emptyset
+checktrue fcomp13   \setminus \emptyset   = fcomp13
+% singleton sets
+checktrue s1        \setminus s1          = \emptyset
+checktrue s1        \setminus (0 \upto 2) = \emptyset
+checktrue (0 \upto 2) \setminus s1        = \{0,2\}
+% on larger sets
+checktrue s13       \setminus \{5,4,5,0\} = s13
+checktrue s13       \setminus s35         = 1 \upto 2
+checktrue s13       \setminus (0 \upto 6) = \emptyset
+checktrue (0 \upto 6) \setminus s13       = \{0,4,5,6,5,4,0\}
+% on set comprehensions
+checktrue s13       \setminus fcomp13     = \emptyset
+checktrue fcomp13   \setminus s13         = \emptyset
+checktrue fcomp13   \setminus fcomp13     = \emptyset
+checktrue fcomp13   \setminus fcomp149    = 2 \upto 3
+
+
+echo     Testing membership of set comprehensions
+checktrue 1 \in    \{ x:\nat \}
+checktrue 1 \in    \{ x:\nat_1 \}
+checktrue 1 \in    \{ x: s13 \}
+checktrue 3 \notin \{ x: s15 | x \notin s13 \}
+checktrue 4 \in    \{ x: s15 | x \notin s13 \}
+checktrue 5 \in    \{ x: s15 | x \notin s13 \}
+checktrue 6 \notin \{ x: s15 | x \notin s13 \}
+checktrue 15 \in   \{ x: s15 | x > 3 @ x+10 \}
+checktrue 0 \notin \{x:\nat_1\}
+checktrue -1 \notin \{x:\nat_1; y: 1 \upto 4 @ x\}
+
+
+echo     Testing membership of sets in sets-of-sets
+checktrue \emptyset \in \{\emptyset\}
+checktrue \emptyset \in \{\emptyset \cap \emptyset\}
+checktrue \{0,1\} \in \{\{0,1\}\}
+checktrue \{0,1\} \in \{\{0,1\}\cap\{0,1\}\}
+checktrue \{-1,1\} \in \{\{-1,1\},\{1,2\}\}
+checktrue \{-1,1\} \in \{\{-1,1\},\{1,2\}\} \cap \{\{-1,1\},\{1,3\}\}
+checktrue \{0, -1\} \in \{\{0,1\},\{0, -1\}\}
+checktrue \{1,1\} \in \{\{0,0\},\{1,1\},\{2,2\}\}
+checktrue \{-1, -1\} \in \{\{-1, -1\},\{-1, -1\}\}
+
+\begin{zed}
+  set951 == \{ \{-9999, -9999\}, \{-5000, -5000\}, \{-1, -1\} \}
+\end{zed}
+checktrue \{-9999, -9999\} \in set951
+checktrue \{0,0\} \notin set951
+
+
+echo     Testing the use of sets as functions
+% explicit set displays
+checktrue  \{ (1,2) \} 1 = 2
+checkundef \{ (1,2) \} 2 = 2
+checkundef \{\} 1 = 1
+% simple set comprehensions
+checktrue  \{ x:\nat @ (x,x+1) \} 0 = 1
+checkundef \{ x:\nat @ (x,x+1) \} (-1) = 0
+checkundef \{ x:\nat | x < 5 @ (x,x+1) \} 5 = 6
+% same 3 tests as above, but expressed as a lambda function.
+checktrue  (\lambda x:\nat @ x+1) 0 = 1
+checkundef (\lambda x:\nat @ x+1) (-1) = 0
+checkundef (\lambda x:\nat | x < 5 @ x+1) 5 = 6
+% input pattern contains constants
+checktrue  \{ x:\nat @ ((x,1),x) \} (5,1) = 5
+checkundef \{ x:\nat @ ((x,1),x) \} (5,2) = 5
+% multiple results for a given input
+checktrue  \{ x:\nat; y:1 \upto 5 | y < x @ (x,x+y) \} 2 = 3
+checkundef \{ x:\nat; y:1 \upto 5 | y < x @ (x,x+y) \} 3 = 5
+checkundef \{ x:\nat; y:1 \upto 5 | y < x @ (x,x+y) \} 1 = 1
+% implicit characteristic tuple
+checktrue  \{ x:\nat; y:1 \upto 5 | y < x \} 2 = 1
+% implicit result
+checkundef \{ x,y:\nat | y=x*x \} (-1) = 0
+% we can calculate squares, but not square roots.
+checktrue  \{ x,y:\nat | y=x*x \} 0 = 0
+checktrue  \{ x,y:\nat | y=x*x \} 2 = 4
+% requires good reordering AFTER function application.
+checktrue \{ x,y:\nat | x<y \land y-1 \leq x @ (y,x)\} ~3 = 2 
+
+
+echo     Testing membership in power sets
+checktrue \power \{\} = \{ \emptyset \}
+checktrue \{\} \in \power \{\}
+checktrue \{\} \in \power \{1\}
+checktrue \{\} \in \power \{1,2,3\}
+checktrue \{1\} \notin \power \{\}
+checktrue \{1,2\} \notin \power \{\}
+checktrue \{4\} \notin \power \{1\}
+checktrue \{4\} \notin \power \{1,2,3\}
+checktrue \{1\} \in \power \{1\}
+checktrue \{1\} \in \power \{1,2,3\}
+checktrue \{1,2\} \notin \power \{1\}
+checktrue \{1,2\} \in \power \{1,2,3\}
+checktrue \{1,2,3,4\} \notin \power \{1,2,3\}
+checktrue \{1,2,3\} \in \power \{1,2,3\}
+checktrue \{2,3,4\} \notin \power \{1,2,3\}
+checktrue \{\} \in \power \nat
+checktrue \{1\} \in \power \nat
+checktrue \{1,2,4\} \in \power \nat
+
+checktrue \power_1 \{\} = \{\}
+checktrue \{\} \notin \power_1 \{\}
+checktrue \{\} \notin \power_1 \{1\}
+checktrue \{\} \notin \power_1 \{1,2,3\}
+checktrue \{1\} \notin \power_1 \{\}
+checktrue \{1,2\} \notin \power_1 \{\}
+checktrue \{4\} \notin \power_1 \{1\}
+checktrue \{4\} \notin \power_1 \{1,2,3\}
+checktrue \{1\} \in \power_1 \{1\}
+checktrue \{1\} \in \power_1 \{1,2,3\}
+checktrue \{1,2\} \notin \power_1 \{1\}
+checktrue \{1,2\} \in \power_1 \{1,2,3\}
+checktrue \{1,2,3,4\} \notin \power_1 \{1,2,3\}
+checktrue \{1,2,3\} \in \power_1 \{1,2,3\}
+checktrue \{2,3,4\} \notin \power_1 \{1,2,3\}
+checktrue \{-1\} \notin \power \nat
+checktrue \{0\} \notin \power \nat_1
+
+
+echo     Testing cardinality (\#)
+
+% empty sets
+%           1. built in type
+checktrue \# \emptyset = 0
+%           2. explicit empty set
+checktrue \# \{\} = 0
+%           3. set comprehension
+checktrue \# \{x:1 \upto 10 | x < 0 \land x = 0\} = 0
+
+% singleton sets
+%           1. explicit set with negative element
+checktrue \# \{-1\} = 1
+%            2. set comprehension with negative element
+checktrue \# \{x:-10 \upto -1 | x < 0 \land x > -2\} = 1
+%            3. integer range with negative element
+checktrue \# (-2 \upto -1) = 2
+
+% sets with several elements
+%            1. explicit set with positive elements
+checktrue \# \{1,2\} = 2
+%            2. set comprehension with positive element
+checktrue \# \{x:1 \upto 10 | x > 5\} = 5
+%            3. integer range with positive element
+checktrue \# (1 \upto 2) = 2
+checktrue \# (10 \upto 10) = 1
+checktrue \# (10 \upto 0) = 0
+
+% infinite sets
+% The cardinality operator is not defined over infinite sets,
+% so the following should all be undefined.
+checkundef \# \num > 100
+checkundef \# \nat = 0
+
+quit

@@ -1,0 +1,60 @@
+% This is an input file for Jaza, to test free types.
+%
+% Each command must be on a single line.
+% Each checktrue should evaluate to True
+%   (any other result means the test has exposed an error in Jaza).
+
+
+echo Testing free types...
+
+\begin{zed}
+T ::= Happy | Sad
+\end{zed}
+
+\begin{zed}
+U ::= Unknown | Known\ldata T\rdata | Soon\ldata U\rdata
+\end{zed}
+
+\begin{zed}
+V ::= Red | Blue | Feeling\ldata T \rdata
+\end{zed}
+
+\begin{zed}
+N14 == \{1,2,3,4\}
+\end{zed}
+
+\begin{zed}
+N58 == \{5,6,7,8\}
+\end{zed}
+
+\begin{zed}
+LETTER ::= a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z
+\end{zed}
+
+echo     Testing membership of free types
+checktrue Happy \in T
+checktrue Sad \in T
+checktrue Unknown \in U
+checktrue Known Happy \in U
+checktrue Known Sad \in U
+checktrue Soon Unknown \in U
+checktrue Soon (Known Happy) \in U
+checktrue Soon (Known Sad) \in U
+checktrue Soon (Soon (Known Happy)) \in U
+checktrue Known \notin N14
+
+echo     Testing equality of free types
+checktrue T = \{Happy, Sad\}
+checktrue T \neq \{Happy\}
+checktrue T \neq \{\}
+
+
+echo     Testing cardinality of free types
+checktrue \# \{a\} = 1
+checktrue \# LETTER = 26
+checktrue \# T = 2
+
+checktrue \# V = 4
+checktrue \# (\power V) = 16
+
+quit
