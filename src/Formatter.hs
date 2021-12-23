@@ -24,7 +24,7 @@ module Formatter
 )
 where
 
-import Pretty
+import Text.PrettyPrint.HughesPJ as Pretty
 import AST
 import Parse
 import qualified FiniteSets

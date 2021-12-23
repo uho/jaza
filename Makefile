@@ -1,29 +1,32 @@
 
-
 all: jaza
 
+# Create environment to run old i386 Jaza binary
 .PHONY: jaza-image
 jaza-image: Dockerfile
 	docker build -f Dockerfile -t jaza .
 
+# Run Jaza with Hugs
+.PHONY: run
+run: jaza-image
+	docker run -i -t --rm -v $(PWD)/src:/root jaza $*
+
+# Create environemtn to build amd64 Jaza executable
 .PHONY: jaza-build-image
 jaza-build-image: Dockerfile
 	docker build -f Dockerfile-build -t jaza-build .
 
-.PHONY: run
-run: jaza-image
-	docker run -i -t --rm -v $(PWD):/root/jaza/workdir jaza $*
-
 .PHONY: 
 jaza: jaza-build-image
 	docker run --rm -v $(PWD)/src:/root jaza-build
-	docker run --rm -v $(PWD)/src:/root jaza-build cat jaza >jaza
-	chmod 755 jaza
-	file jaza
+	chmod 755 src/jaza
+	file src/jaza
 
 .PHONY: clean
 clean: 
-	rm -f jaza
+	rm -f src/jaza
+	rm -f src/*.o
+	rm -f src/*.hi
 
 .PHONY: tidy
 tidy: clean
