@@ -1,0 +1,12 @@
+# Build Jaza as amd64 binary using GHC 7 provided by Debian Jessie
+FROM debian:jessie   
+
+RUN apt-get update && apt-get upgrade -y 
+RUN apt-get --force-yes -y install ghc patchelf
+
+# bring in libbffi version 7 to link against instead of libffi 6
+COPY lib/libffi.so.7 /usr/lib/x86_64-linux-gnu/
+
+VOLUME /root
+WORKDIR /root
+CMD ["./build"]

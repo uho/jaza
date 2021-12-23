@@ -490,7 +490,7 @@ numbers of times (zero for \verb.identity., a given number for
 > identity s    = set [ZTuple [x,x] | x <- set2list s]
 
 > iter rs 1     = rs
-> iter rs (k+1) = rs `semi` iter rs k
+> iter rs k     = rs `semi` iter rs (k-1)
 
 > transclosure rs = grow rs rs
 >     where

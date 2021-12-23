@@ -83,7 +83,7 @@ zterm_stdout pi formatfunc t
   output_string pre (Chr '\n') s = do {putStr ('\n':pre); s}
   output_string _   (Chr c)   s  = do {putStr [c]; s}
   output_string _   (Str s1)  s2 = do {putStr s1; s2}
-  output_string _   (PStr s1) s2 = do {putStr s1; s2}
+--  output_string _   (PStr s1) s2 = do {putStr s1; s2}
 
 zpara_stdout pi t = zterm_stdout pi print_para t
 zpred_stdout pi t = zterm_stdout pi print_pred t

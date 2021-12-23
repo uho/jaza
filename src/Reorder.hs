@@ -9,7 +9,7 @@ import AST
 import SetSize
 import Subs
 import List
-import MyDebug
+-- import MyDebug
 
 import Parse
 
