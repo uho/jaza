@@ -2,3 +2,7 @@
 
 ghc -package haskell98-2.0.0.2 -package ghc-7.6.3 -hide-package base /usr/lib/x86_64-linux-gnu/libffi.so.7 -o jaza --make TextUI
 patchelf --remove-needed libffi.so.6 jaza
+if [ -n "$UID" ]
+then
+   chown $UID:$GID jaza
+fi
